@@ -1,12 +1,12 @@
 # Developer Guide
 
-This document provides instructions for developers working on the langnet CLI tool.
+This document provides instructions for developers working on this boilerplate CLI template.
 
 ## Current Project Status
 
-The langnet CLI tool is a fully functional Python application with the following characteristics:
+This is a fully functional Python CLI application template with the following characteristics:
 
-✅ **Complete Implementation**: CLI tool with langnet API integration  
+✅ **Complete Implementation**: CLI tool with modern Python tooling  
 ✅ **Modern Stack**: Click + Rich + sh libraries  
 ✅ **Reproducible Environment**: Nix/devenv + UV for dependency management  
 ✅ **Multiple Output Formats**: Rich formatting and JSON output  
@@ -41,8 +41,6 @@ just devenv-zell
 
 **Important Note:** Devenv uses `uv` for Python environment management, not traditional virtualenvs. There's no need to manually activate virtual environments or set `PYTHONPATH`. The `devenv shell` command handles everything automatically.
 
-
-
 ### Verifying the Environment
 
 Once inside the developer session:
@@ -56,14 +54,14 @@ echo "UV location: $(which uv)"
 uv run python -c "import click, sh, rich; print('✅ All dependencies available')"
 
 # Test the application
-uv run langcurl --help
+uv run boilerplate-cli --help
 ```
 
 ## Project Structure
 
 ```
 .
-├── langcurl_app/     # Python application directory
+├── boilerplate_app/     # Python application directory
 │   ├── __init__.py
 │   └── cli.py        # Main CLI application
 ├── justfile          # Just task runner recipes
@@ -82,20 +80,19 @@ uv run langcurl --help
 
 ### Main Components
 
-1. **CLI Interface** (`langcurl_app/cli.py`)
+1. **CLI Interface** (`boilerplate_app/cli.py`)
      - Click command decorators for CLI options
      - Main entry point and argument parsing
      - Output formatting logic
-     - Error handling with custom APIError exception
+     - Error handling with custom AppError exception
 
-2. **API Client** (`make_api_request()`)
-     - HTTP requests to langnet API using `sh` library
-     - Error handling and response parsing
-     - Curl command construction with proper URL encoding
-     - Support for different HTTP status codes
+2. **System Integration** (`get_system_info()`)
+     - Subprocess calls using `sh` library
+     - System information gathering
+     - Error handling for subprocess failures
 
 3. **Output Handlers**
-     - `format_response()`: Rich-formatted human-readable output
+     - `format_output()`: Rich-formatted human-readable output
      - JSON output: Machine-parseable JSON strings
      - Debug output to stderr
 
@@ -106,16 +103,15 @@ uv run langcurl --help
 
 ### Key Functions
 
-- `make_api_request(query, language)`: Makes HTTP request to langnet API
-- `format_response(response)`: Formats JSON response with Rich panels
-- `langcurl()`: Main CLI command handler
-- `APIError`: Custom exception for API-related errors
+- `get_system_info()`: Gathers system information using sh library
+- `format_output(message, system_info)`: Formats output with Rich panels
+- `app()`: Main CLI command handler
+- `AppError`: Custom exception for application errors
 
 ### Technical Implementation
 
-- **HTTP Client**: Uses `sh.curl` with proper error handling
-- **JSON Processing**: Python's built-in json module
 - **CLI Framework**: Click with comprehensive help and options
+- **Subprocess Management**: sh library with proper error handling
 - **Terminal Formatting**: Rich library for beautiful output
 - **Type Hints**: Full type annotations for better code quality
 - **Error Handling**: Specific exceptions with detailed error messages
@@ -125,23 +121,23 @@ uv run langcurl --help
 ### Making Changes
 
 1. **Enter development environment** (if not already):
-   ```bash
-   just devenv-zell
-   ```
+    ```bash
+    just devenv-zell
+    ```
 
-2. **Make your changes** to the source code in `langcurl_app/cli.py`
+2. **Make your changes** to the source code in `boilerplate_app/cli.py`
 
 3. **Test your changes**:
-   ```bash
-   # Test basic functionality
-   just langcurl
+    ```bash
+    # Test basic functionality
+    just run
 
-   # Test JSON output
-   just langcurl-json
+    # Test JSON output
+    just run-json
 
-   # Test with different parameters
-   uv run langcurl --query "test" --language "grc" --json
-   ```
+    # Test with custom message
+    uv run boilerplate-cli --message "Test message"
+    ```
 
 ### Testing and Verification
 
@@ -149,13 +145,12 @@ The project provides multiple testing approaches:
 
 ```bash
 # Test all main commands
-just langcurl                    # Default search (οὐσία)
-just langcurl-greek            # Greek search (φιλεῖν)
-just langcurl-latin            # Latin search (amare)
-just langcurl-json             # JSON output
+just run                    # Default command
+just run-custom             # Custom message
+just run-json               # JSON output
 
 # Test error handling
-uv run langcurl --query "nonexistent" --language "grc"
+uv run boilerplate-cli --message "test"
 
 # Verify environment
 uv run python -c "import click, sh, rich; print('✅ All dependencies available')"
@@ -177,7 +172,7 @@ uv build
 
 All dependencies are managed by `devenv` and defined in `devenv.nix` and `pyproject.toml`:
 
-- **Python**: 3.13
+- **Python**: 3.13 (or latest)
 - **Click**: CLI framework
 - **Rich**: Terminal formatting and colorization
 - **sh**: subprocess wrapper
@@ -197,12 +192,12 @@ Example workflow:
 ```bash
 # Correct ✅
 just devenv-zell
-uv run langcurl --json
+uv run boilerplate-cli --json
 uv build
 
 # Incorrect ❌ (no traditional venv to activate)
 source .venv/activate  # This doesn't exist
-python langcurl_app/cli.py  # Dependencies not found
+python boilerplate_app/cli.py  # Dependencies not found
 ```
 
 ### Build and Package Management
@@ -216,42 +211,32 @@ uv build
 pip install .
 
 # Check package info
-pip show langcurl
+pip show boilerplate-cli
 ```
-
-
 
 ## Debugging
 
 ### Common Issues
 
 1. **Import Errors**: Ensure you're inside `devenv shell`
-   ```bash
-   # Check if you're in the right environment
-   which python  # Should show devenv's python
-   which uv     # Should show devenv's uv
-   
-   # Test dependencies
-   uv run python -c "import click, sh, rich; print('Dependencies OK')"
-   ```
-
-2. **API Connection Issues**: The langnet API should be running on localhost:5050
-   ```bash
-    # Test API connectivity
-    curl --data-urlencode "s=test" --data-urlencode "l=grc" --get "http://localhost:5050/api/q"
+    ```bash
+    # Check if you're in the right environment
+    which python  # Should show devenv's python
+    which uv     # Should show devenv's uv
+    
+    # Test dependencies
+    uv run python -c "import click, sh, rich; print('Dependencies OK')"
     ```
 
-3. **Missing Dependencies**: devenv should handle all dependencies automatically
-   - If you see import errors, use `uv run` instead of direct `python`
-   - Never manually set PYTHONPATH or activate virtualenvs
+2. **Missing Dependencies**: devenv should handle all dependencies automatically
+    - If you see import errors, use `uv run` instead of direct `python`
+    - Never manually set PYTHONPATH or activate virtualenvs
 
-4. **Build Issues**: Use UV for package building
-   ```bash
-   devenv shell
-   uv build
-   ```
-
-
+3. **Build Issues**: Use UV for package building
+    ```bash
+    devenv shell
+    uv build
+    ```
 
 ### Debug Output
 
@@ -259,14 +244,39 @@ Debug information is sent to stderr, while program output goes to stdout:
 
 ```bash
 # See debug output (stderr)
-just langcurl-json
+just run-json
 
 # See only clean JSON (stdout)
-just langcurl-json 2>/dev/null
+just run-json 2>/dev/null
 
 # Capture both separately
-just langcurl-json 1>output.json 2>debug.log
+just run-json 1>output.json 2>debug.log
 ```
+
+## Customizing This Template
+
+This boilerplate is designed to be easily customized for your specific needs:
+
+### Changing the Project Name
+
+1. Update `name` in `pyproject.toml`
+2. Update `scripts` in `pyproject.toml`
+3. Update `SESSION_NAME` in `devenv.nix`
+4. Update directory names if desired
+
+### Adding New Features
+
+1. Add new Click options in `boilerplate_app/cli.py`
+2. Add corresponding logic in your functions
+3. Update justfile recipes if needed
+4. Update documentation
+
+### Integrating External Services
+
+1. Add required dependencies to `pyproject.toml`
+2. Add external packages to `devenv.nix` if needed
+3. Implement service integration in your CLI functions
+4. Add error handling for service failures
 
 ## Contributing
 
@@ -283,7 +293,7 @@ The project uses Nix/devenv for reproducible deployments. The entire development
 
 ### Production Considerations
 
-- The application expects a running langnet API at localhost:5050
+- The application is self-contained with no external service dependencies
 - JSON output is stable and machine-parseable
 - Error handling is robust with proper exception management
 - No external configuration files required
@@ -313,74 +323,37 @@ devenv shell --force
 - Manual PYTHONPATH setting is complex and error-prone
 - Use `uv run` for all Python execution
 
-### API Issues
-
-If the langnet API is not available:
-
-1. Check if the API service is running on localhost:5050
-2. Test connectivity: `curl localhost:5050`
-3. Check API logs if available
-
 ## Performance Considerations
 
-- The application makes HTTP requests synchronously
-- Large JSON responses are handled efficiently with Python's json module
+- The application makes subprocess calls synchronously
 - Terminal output is optimized for readability with Rich formatting
-- Memory usage is minimal for typical API responses
+- Memory usage is minimal for typical operations
 
-## Current Status and Next Steps
+## Next Steps
 
-### ✅ Completed Features
-
-- **Core CLI Application**: Fully functional langnet API client
-- **Multiple Language Support**: Greek (grc) and Latin (lat) searches
-- **Dual Output Formats**: Rich formatting and JSON output
-- **Robust Error Handling**: Custom exceptions and detailed error messages
-- **Environment Management**: Nix/devenv + UV setup
-- **Task Automation**: Justfile for common operations
-- **Package Configuration**: Proper pyproject.toml with entry points
-- **Documentation**: Comprehensive README and developer guide
-
-### 🔄 Current Limitations
-
-- **No Formal Test Suite**: Currently relies on manual testing
-- **Single API Endpoint**: Only supports langnet API at localhost:5050
-- **No Configuration Files**: All options passed via CLI arguments
-- **No Rate Limiting**: No built-in rate limiting for API calls
-
-### 🎯 Potential Enhancements
+### Potential Enhancements
 
 1. **Testing Framework**
-   - Add pytest unit tests
-   - Integration tests for API endpoints
-   - CLI argument testing
+    - Add pytest unit tests
+    - Integration tests for CLI commands
+    - CLI argument testing
 
 2. **Configuration Management**
-   - Support for configuration files
-   - Environment variable configuration
-   - Custom API endpoint configuration
+    - Support for configuration files
+    - Environment variable configuration
+    - Custom settings management
 
 3. **Enhanced CLI Features**
-   - Batch processing capabilities
-   - Output format customization
-   - Progress indicators for long operations
+    - Subcommands for different operations
+    - Output format customization
+    - Progress indicators for long operations
 
-4. **API Improvements**
-   - Retrying failed requests
-   - Rate limiting
-   - Connection timeout handling
-   - Support for multiple API endpoints
+4. **Documentation**
+    - API documentation
+    - More usage examples
+    - Tutorial for customization
 
 5. **Packaging Distribution**
-   - Publish to PyPI
-   - Docker containerization
-   - GitHub Actions CI/CD pipeline
-
-### 📊 Development Metrics
-
-- **Code Quality**: Full type hints, proper error handling
-- **Documentation**: Comprehensive docs and examples
-- **Reproducibility**: Nix/devenv environment
-- **Testing**: Manual testing via just commands
-- **Dependencies**: Minimal, well-managed dependencies
-- **Code Size**: ~150 lines of core application code
+    - Publish to PyPI
+    - Docker containerization
+    - GitHub Actions CI/CD pipeline

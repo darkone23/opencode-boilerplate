@@ -13,7 +13,7 @@ let
 in
 {
   # https://devenv.sh/basics/
-  env.SESSION_NAME = "langcurl";
+  env.SESSION_NAME = "boilerplate-cli";
   env.GIT_EXTERNAL_DIFF = "${pkgs.difftastic}/bin/difft";
 
   # https://devenv.sh/packages/

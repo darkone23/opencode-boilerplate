@@ -1,20 +1,27 @@
-# langnet CLI Tool
+# Boilerplate CLI Template
 
-A Python CLI application that integrates with the langnet digital library API for classical language text analysis.
+A modern Python CLI application template demonstrating `uv` builds with `click`, `rich`, and `sh` library.
+Built with `nix` & `devenv` for reproducible environments.
+Terminal first for taking advantage of agent workflows like `opencode`
 
 ## Features
 
-- Search Greek and Latin text in the langnet database
-- Clean JSON output for programmatic use (compatible with jq, nushell, etc.)
-- Formatted human-readable output with Rich
-- Built with Click for CLI interface
-- Nix/devenv environment for reproducible development
+- Modern CLI interface built with `click`
+- Beautiful terminal output with `rich`
+- Subprocess management via `sh` library
+- Agent integration for `opencode`
+- Clean JSON output for programmatic use
+- Reproducible `nix` & `devenv` environment
+- `uv` for fast Python dependency management
+- Task automation with `just`
 
 ## Quick Start
 
 ### Prerequisites
 - [Nix](https://nixos.org/download/)
 - [devenv](https://devenv.sh/)
+- [git](https://git-scm.com/)
+- [just](https://just.systems/)
 
 ### Setup and Run
 
@@ -22,52 +29,52 @@ A Python CLI application that integrates with the langnet digital library API fo
 # Enter development environment (all setup is automatic)
 devenv shell
 
-# Run default search
+# Run default command
 just
 
-# Run specific searches
-just langcurl-greek    # Search for Greek: φιλεῖν
-just langcurl-latin    # Search for Latin: amare
-just langcurl-json     # Clean JSON output
+# Run with custom message
+just run-custom
+
+# Run with JSON output
+just run-json
 
 # Direct usage
-uv run langcurl --help
-uv run langcurl --query "φιλοσοφία" --language "grc" --json
+uv run boilerplate-cli --help
+uv run boilerplate-cli --message "Custom message" --json
 ```
 
 ## CLI Options
 
-- `--query TEXT`: Text to search in langnet database (default: οὐσία)
-- `--language TEXT`: Language code (grc/lat, default: grc)  
+- `--message TEXT`: Message to display (default: "Hello, World!")
 - `--json`: Output parsable JSON instead of formatted output
 
 ## Examples
 
+### Basic Usage
+
+```bash
+# Default hello world
+uv run boilerplate-cli
+
+# Custom message
+uv run boilerplate-cli --message "Hello from boilerplate!"
+```
+
 ### JSON Output for Scripting
 
 ```bash
-# Clean JSON output perfect for piping to jq
-just langcurl-json | jq '.diogenes.chunks[0].chunk_type'
+# Clean JSON output for piping to json tools
+just run-json | ...
 
 # Output to file
-just langcurl-json > results.json
-```
-
-### Different Languages
-
-```bash
-# Greek search
-uv run langcurl --query "φιλοσοφία" --language "grc"
-
-# Latin search  
-uv run langcurl --query "amare" --language "lat"
+just run-json > output.json
 ```
 
 ## Project Structure
 
 ```
 .
-├── langcurl_app/     # Python application directory
+├── boilerplate_app/     # Python application directory
 │   ├── __init__.py
 │   └── cli.py        # Main CLI application
 ├── justfile          # Just task runner recipes
@@ -78,16 +85,15 @@ uv run langcurl --query "amare" --language "lat"
 ├── devenv.lock       # Devenv environment lockfile
 ├── .envrc            # Environment variables
 ├── AGENTS.md         # AI assistant configuration
-├── README.md         # User documentation
+├── README.md         # This file
 └── DEV.md            # Developer guide
 ```
 
 ## Architecture
 
-- **CLI Layer**: Click-based command interface
-- **HTTP Client**: `sh` library for curl requests
-- **Output**: Rich for formatted display, JSON for machine consumption
-- **API**: langnet digital library REST API
+- **CLI Layer**: Click-based command interface with argument parsing
+- **Output Layer**: Rich for formatted display, JSON for machine consumption
+- **System Integration**: sh library for subprocess calls
 - **Environment**: Nix/devenv for reproducible development
 - **Package Manager**: UV for Python dependency management
 

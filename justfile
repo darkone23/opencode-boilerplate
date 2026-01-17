@@ -1,17 +1,14 @@
 default:
-    @just langcurl
+    @just run
 
-langcurl:
-    uv run langcurl --query "οὐσία" --language "grc"
+run:
+    uv run --active boilerplate-cli
 
-langcurl-greek:
-    uv run langcurl --query "φιλεῖν" --language "grc"
+run-custom:
+    uv run --active boilerplate-cli --message "Custom message!"
 
-langcurl-latin:
-    uv run langcurl --query "amare" --language "lat"
-
-langcurl-json:
-    uv run langcurl --query "οὐσία" --language "grc" --json
+run-json:
+    uv run --active boilerplate-cli --json
 
 # enter the core developer session
 devenv-zell:

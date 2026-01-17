@@ -1,12 +1,12 @@
 # AGENTS.md
 
 ## Project Overview
-Nix/devenv-based development environment with Click-based Python langcurl app with langnet API integration. Configuration is declarative via Nix expressions.
+Nix/devenv-based development environment with Click-based Python CLI application demonstrating modern Python tooling. Configuration is declarative via Nix expressions.
 
 ## Code Structure
 ```
 .
-├── langcurl_app/     # Python application directory
+├── boilerplate_app/     # Python application directory
 │   ├── __init__.py
 │   └── cli.py        # Main CLI application
 ├── justfile         # Just task runner recipes
@@ -20,11 +20,10 @@ Nix/devenv-based development environment with Click-based Python langcurl app wi
 
 These commands may be run for project automation.
 
-- `devenv shell just` - Run default task (langcurl app with Greek API search)
-- `devenv shell just -- langcurl` - Run langcurl app with default settings
-- `devenv shell just -- langcurl-greek` - Search langnet API for Greek text (φιλεῖν)
-- `devenv shell just -- langcurl-latin` - Search langnet API for Latin text (amare)
-- `devenv shell just -- langcurl-json` - Search langnet API and output parsable JSON
+- `devenv shell just` - Run default task (boilerplate CLI with default message)
+- `devenv shell just -- run` - Run boilerplate CLI with default settings
+- `devenv shell just -- run-custom` - Run boilerplate CLI with custom message
+- `devenv shell just -- run-json` - Run boilerplate CLI and output parsable JSON
 - `devenv shell bash -- -c "$somebash"` - Run bash script inside of devenv
 
 ## Operator Commands
@@ -47,6 +46,5 @@ These commands are intended to only be run by the project operator.
 - No formal test framework configured yet
 
 ## CLI Options
-- `--query TEXT`: Text to search in langnet database (default: οὐσία)
-- `--language TEXT`: Language code (grc/lat, default: grc)
+- `--message TEXT`: Message to display (default: "Hello, World!")
 - `--json`: Output parsable JSON instead of formatted output
