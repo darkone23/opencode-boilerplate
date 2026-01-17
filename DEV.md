@@ -22,6 +22,7 @@ The langnet CLI tool is a fully functional Python application with the following
 - [Nix](https://nixos.org/download/)
 - [devenv](https://devenv.sh/)
 - [Git](https://git-scm.com/)
+- [just](https://just.systems)
 
 ### Environment Activation
 
@@ -30,40 +31,21 @@ The langnet CLI tool is a fully functional Python application with the following
 git clone <repository-url>
 cd <repository-name>
 
-# Enter development environment (activates uv automatically)
-devenv shell
+# Enter development zellij session
+#   (activates uv automatically)
+just devenv-zell
+
+# zellij is particularly useful because of its persistent shell sessions
+# see https://zellij.dev/ for more
 ```
 
 **Important Note:** Devenv uses `uv` for Python environment management, not traditional virtualenvs. There's no need to manually activate virtual environments or set `PYTHONPATH`. The `devenv shell` command handles everything automatically.
 
-### About Opencode Static Analysis Warnings
 
-When working with opencode, you may see import warnings like:
-```
-ERROR [1:8] Import "click" could not be resolved
-ERROR [2:8] Import "sh" could not be resolved
-```
-
-**These are normal and expected:**
-- They're diagnostic messages from opencode's static analysis tools
-- They occur because opencode analyzes code in isolation
-- They do NOT indicate actual runtime problems
-- The application works perfectly when run properly
-
-**Do NOT try to manually activate environments or set PYTHONPATH for opencode.** The correct workflow is:
-
-```bash
-# This is all you need - devenv handles everything
-devenv shell
-    uv run langcurl --help
-
-# Test that imports work
-uv run python -c "import click, sh, rich; print('All dependencies available')"
-```
 
 ### Verifying the Environment
 
-Once inside `devenv shell`:
+Once inside the developer session:
 
 ```bash
 # Check Python environment
@@ -144,7 +126,7 @@ uv run langcurl --help
 
 1. **Enter development environment** (if not already):
    ```bash
-   devenv shell
+   just devenv-zell
    ```
 
 2. **Make your changes** to the source code in `langcurl_app/cli.py`
@@ -209,12 +191,12 @@ All dependencies are managed by `devenv` and defined in `devenv.nix` and `pyproj
 - No `.venv/` directories or `activate` scripts
 - Dependencies are managed through Nix store paths
 - Use `uv run` instead of direct Python execution
-- The environment is automatically activated in `devenv shell`
+- The environment is automatically activated via `devenv shell`
 
 Example workflow:
 ```bash
 # Correct ✅
-devenv shell
+just devenv-zell
 uv run langcurl --json
 uv build
 
@@ -226,7 +208,7 @@ python langcurl_app/cli.py  # Dependencies not found
 ### Build and Package Management
 
 ```bash
-# Build package within devenv shell
+# Build package within devenv shell (no zellij session)
 devenv shell
 uv build
 
@@ -237,24 +219,7 @@ pip install .
 pip show langcurl
 ```
 
-### Opencode Static Analysis
 
-When using opencode, you may see import warnings. These are normal:
-
-```
-ERROR [1:8] Import "click" could not be resolved
-```
-
-**These are diagnostic warnings, not runtime errors:**
-- Opencode analyzes code in isolation
-- The application works fine when run properly
-- No manual environment setup needed for opencode
-- Focus on runtime testing, not static analysis warnings
-
-**Runtime verification:**
-```bash
-devenv shell -- uv run python -c "import click, sh, rich; print('Dependencies OK')"
-```
 
 ## Debugging
 
@@ -272,9 +237,9 @@ devenv shell -- uv run python -c "import click, sh, rich; print('Dependencies OK
 
 2. **API Connection Issues**: The langnet API should be running on localhost:5050
    ```bash
-   # Test API connectivity
-   curl "http://localhost:5050/api?q=s=test&l=grc"
-   ```
+    # Test API connectivity
+    curl --data-urlencode "s=test" --data-urlencode "l=grc" --get "http://localhost:5050/api/q"
+    ```
 
 3. **Missing Dependencies**: devenv should handle all dependencies automatically
    - If you see import errors, use `uv run` instead of direct `python`
@@ -286,25 +251,7 @@ devenv shell -- uv run python -c "import click, sh, rich; print('Dependencies OK
    uv build
    ```
 
-### Opencode Import Warnings
 
-**Expected Behavior:**
-```
-ERROR [1:8] Import "click" could not be resolved
-ERROR [2:8] Import "sh" could not be resolved
-```
-
-**What to do:**
-- Ignore these warnings - they're normal for static analysis
-- Test runtime functionality instead:
-  ```bash
-   devenv shell -- uv run langcurl --help
-  ```
-
-**What NOT to do:**
-- Don't manually activate virtual environments (they don't exist)
-- Don't set PYTHONPATH (it's complex and ineffective)
-- Don't worry about static analysis warnings
 
 ### Debug Output
 

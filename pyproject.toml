@@ -1,7 +1,7 @@
 [project]
 name = "langcurl"
 version = "0.1.0"
-description = "A simple Click-based hello world app with langnet API integration"
+description = "A CLI tool for searching the langnet digital library API for classical language text analysis"
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [

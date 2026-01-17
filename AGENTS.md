@@ -16,13 +16,22 @@ Nix/devenv-based development environment with Click-based Python langcurl app wi
 └── DEV.md           # Developer guide
 ```
 
-## Commands
+## Available Commands
+
+These commands may be run for project automation.
+
 - `devenv shell just` - Run default task (langcurl app with Greek API search)
 - `devenv shell just -- langcurl` - Run langcurl app with default settings
 - `devenv shell just -- langcurl-greek` - Search langnet API for Greek text (φιλεῖν)
 - `devenv shell just -- langcurl-latin` - Search langnet API for Latin text (amare)
 - `devenv shell just -- langcurl-json` - Search langnet API and output parsable JSON
 - `devenv shell bash -- -c "$somebash"` - Run bash script inside of devenv
+
+## Operator Commands
+
+These commands are intended to only be run by the project operator.
+
+- `devenv shell just -- devenv-zell` - Enter developer session with zellij
 
 ## Code Style
 - **Python**: Use Click for CLI, `sh` library for subprocess calls, `rich` for pretty printing

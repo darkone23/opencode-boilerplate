@@ -1,5 +1,5 @@
 default:
-    uv run langcurl
+    @just langcurl
 
 langcurl:
     uv run langcurl --query "οὐσία" --language "grc"
@@ -12,3 +12,7 @@ langcurl-latin:
 
 langcurl-json:
     uv run langcurl --query "οὐσία" --language "grc" --json
+
+# enter the core developer session
+devenv-zell:
+    devenv shell bash -- -c "zell"
